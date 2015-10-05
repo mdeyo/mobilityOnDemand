@@ -27,4 +27,16 @@ else:
 
 
 print(doc)
-print(doc.rev)
+print("rev",doc.rev)
+print("rev",doc['type'])
+print("rev",doc['name'])
+
+
+changes_feed = db.changes()
+
+#while(True):
+    #print(changes_feed)
+
+
+
+
