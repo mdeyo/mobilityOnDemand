@@ -4,19 +4,14 @@ from couchdb import Server,Database
 import time
 
 #server = Server('http://localhost:5984/') #connects to remote server
-database = None
-
-laptop_address = '18.189.46.85'
-#server = Server('http://'+laptop_address+':5984/') #connects to remote server
-
-server = Server('http://mdeyo.iriscouch.com:5984/') #connects to remote server
+#server = Server('http://mdeyo.iriscouch.com:5984/') #connects to remote server
 
 class ConnectionToDatabase(object):
 
     def __init__(self, name='server'):
         self.time_start = time.clock()
         #self.server = Server('http://'+laptop_address+':5984/') #connects to remote server
-        self.server = Server('http://mdeyo.iriscouch.com:5984/') #connects to remote server
+        self.server = Server('http://mdeyo:mobility@mdeyo.iriscouch.com:5984/') #connects to remote server
         self._name = name
         self.ped_database = self.open_db("ped_db")
         self.vehicle_database = self.open_db("vehicle_db")
@@ -30,11 +25,11 @@ class ConnectionToDatabase(object):
 
     def open_db(self,name):
         """Opens up connection to db of name and returns  object"""
-        if(server.__contains__(name)):
-            database = server.__getitem__(name)
+        if(self.server.__contains__(name)):
+            database = self.server.__getitem__(name)
         else:
-            server.create(name)
-            database = server.__getitem__(name)
+            self.server.create(name)
+            database = self.server.__getitem__(name)
 
         return database
 
@@ -66,7 +61,7 @@ class ConnectionToDatabase(object):
             self.ped_database.save(ped_doc)
         return ped_doc
 
-    def add_pedestrian_data(self,id,list_of_points):
+    def add_pedestrian_data2(self,id,list_of_points):
         """Adds pedestrian data to the database"""
         # add pedestrian data with "id", timestamp, and pose
         ped_data_doc = "pedestrians"
@@ -104,14 +99,16 @@ server = db.get_server()
 #db.addPedestrianData("5600","12:50",(41,56))
 
 # if pedestrian id already exists - appends to history list and updates time
-#db.addPedestrianData("5600","12:50",(40,54))
+db.add_pedestrian_data("5600","13:50",(5,5))
 #db.addPedestrianData("5601","12:50",(40,54))
 
 #print(db.openDB("ped_db").__getitem__("5600"))
 
 db.print_pedestrian_doc(db.open_db("ped_db").__getitem__("5600"))
 
+print(db.open_db("ped_db").__getitem__("5600"))
+
 #print('document',db.open_db("new_db").__getitem__("first_doc"))
 
-print("time elapsed",str(time.clock()-db.get_start_time()))
+#print("time elapsed",str(time.clock()-db.get_start_time()))
 
