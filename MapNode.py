@@ -2,26 +2,42 @@ __author__ = 'mdeyo'
 
 from couchdb import Server,Database
 import time
+from MapGraph import MapGraph
+from Search import RoutingProblem
 
 #server = Server('http://localhost:5984/') #connects to remote server
 #server = Server('http://mdeyo.iriscouch.com:5984/') #connects to remote server
 
-class ConnectionToDatabase(object):
+class MapNode(object):
 
-    def __init__(self, name='server'):
+    def __init__(self, number,coords,neighbors):
         self.time_start = time.clock()
         #self.server = Server('http://'+laptop_address+':5984/') #connects to remote server
-        self.server = Server('https://swarm:mobility@veh10.mit.edu:5984/') #connects to remote server
-        self._name = name
-        self.ped_database = self.open_db("test_db")
-        self.vehicle_database = self.open_db("vehicle_db")
-        print("connected!")
+        self.server = Server('http://swarm:mobility@veh10.mit.edu:5984/') #connects to remote server
+        self._number = number
+        self.neighbors = neighbors
+        self.coords = coords
+        self.lat = coords[0]
+        self.lon = coords[1]
+        # print("created: "+str(number)+" at "+str(coords)+" with nearby "+str(neighbors))
 
-    def get_server(self):
-        return self.server
+    def get_neighbors(self):
+        return self.neighbors
 
-    def get_start_time(self):
-        return self.time_start
+    def get_coords(self):
+        return self.coords
+
+    def get_lat(self):
+        return self.lat
+
+    def get_lon(self):
+        return self.lon
+
+    def print_string(self):
+        return ("node:"+str(self._number)+" coords:"+str(self.coords)+" neighbors:"+str(self.neighbors))
+
+    def distance_from(self,lat,lon):
+        return abs((lat-self.lat)*(lat-self.lat)+(lon-self.lon)*(lon-self.lon))
 
     def open_db(self,name):
         """Opens up connection to db of name and returns  object"""
@@ -88,48 +104,6 @@ class ConnectionToDatabase(object):
         for i in history_list:
             print("Timestamp:"+str(i[0]),"Position:"+str(i[1]))
 
-####running test code####
-
-# open up connection to vehicle_db#
-db = ConnectionToDatabase()
-
-test_db = db.open_db("test_db")
-print(db.add_pedestrian_data("500",5,20))
-
-ped_doc = {'_id': "200", 'history': 5, 'recent_time':100}
-data = db.ped_database.save(ped_doc)
-print(data[1])
-
-ped_doc = {'_id': "200", '_rev':data[1],'history': 10, 'recent_time':200}
-data = db.ped_database.save(ped_doc)
 
 
-# ped_doc = {'_id': 100, 'history': [(10,10)], 'recent_time':1240}
-# print test_db.__getitem__("made by hand");
-
-# test_db.
-
-# test_db.save(ped_doc)
-
-# print(test_db.info())
-
-
-# server = db.get_server()
-
-# add pedestrian data with "id", timestamp, and pose
-# db.addPedestrianData("5600","12:50",(41,56))
-
-# if pedestrian id already exists - appends to history list and updates time
-# db.add_pedestrian_data("5600","13:50",(5,5))
-#db.addPedestrianData("5601","12:50",(40,54))
-
-#print(db.openDB("ped_db").__getitem__("5600"))
-
-# db.print_pedestrian_doc(db.open_db("ped_db").__getitem__("5600"))
-
-# print(db.open_db("ped_db").__getitem__("5600"))
-
-#print('document',db.open_db("new_db").__getitem__("first_doc"))
-
-#print("time elapsed",str(time.clock()-db.get_start_time()))
 

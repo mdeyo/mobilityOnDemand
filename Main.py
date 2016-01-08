@@ -1,19 +1,19 @@
 
 __author__ = 'mdeyo'
 
-
 from couchdb import client, http, util, Server
-
 
 #server = Server()# connects to the local_server
 
-server = Server('http://localhost:5984/') #connects to remote server
+# server = Server('http://localhost:5984/') #connects to remote server
+
+server = Server('http://swarm:mobility@veh10.mit.edu:5984/')
 
 #create new database on server
 #db = server.create("new_db")
 
 #open existing database on server
-db = server['new_db']
+db = server['collect_data']
 
 idString = 'second_doc'
 
